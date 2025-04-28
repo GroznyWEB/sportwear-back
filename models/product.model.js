@@ -5,11 +5,11 @@ const sizeSchema = new mongoose.Schema({
 });
 
 const ProductSchema = new mongoose.Schema({
-    image: [String],
-    name: { type: String, required: true },
+    images: [String],
+    title: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
-    brend: { type: String },
+    brand: { type: String },
     sizes: [sizeSchema] 
 });
 
