@@ -1,10 +1,23 @@
 const Products = require("../models/product.model");
+const cache = require('memory-cache'); // Добавляем пакет
+
+const CACHE_TIME = 5 * 60 * 1000;
 
 module.exports.productsController = {
   // Получение всех продуктов
   getProducts: async (req, res) => {
     try {
+      const cachedProducts = cache.get('allProducts');
+      if (cachedProducts) {
+        return res.json(cachedProducts); // Отправляем из кэша
+      }
+
       const products = await Products.find();
+      // Сохраняем в кэш
+      cache.put('allProducts', products, CACHE_TIME);
+
+      // Устанавливаем заголовок для браузерного кэша (необязательно)
+      res.set('Cache-Control', 'public, max-age=60'); // 1 минута
       return res.json(products);
     } catch (e) {
       return res.status(500).json({ message: "Ошибка при загрузке продуктов", error: e.message });
